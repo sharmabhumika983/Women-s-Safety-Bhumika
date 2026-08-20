@@ -107,6 +107,12 @@ export default function Header(){
             <Link to="/contact" className="nav-item nav-link">
               Contact
             </Link>
+             <Link to="/login" className="nav-item nav-link">
+              Login
+            </Link>
+             <Link to="/register" className="nav-item nav-link">
+              Register
+            </Link>
           </div>
           <div className="d-flex me-4">
             <div
@@ -117,21 +123,21 @@ export default function Header(){
                 className="position-relative wow tada"
                 data-wow-delay=".9s"
               >
-                <i className="fa fa-phone-alt text-primary fa-2x me-4" />
+                
                 <div
                   className="position-absolute"
                   style={{ top: "-7px", left: 20 }}
                 >
                   <span>
-                    <i className="fa fa-comment-dots text-secondary" />
+                    
                   </span>
                 </div>
               </Link>
             </div>
             <div className="d-flex flex-column pe-3 border-end border-primary">
-              <span className="text-primary">Have any questions?</span>
+              <span className="text-primary"></span>
               <Link to="">
-                <span className="text-secondary">Free: + 91 97790-94021</span>
+                <span className="text-secondary"></span>
               </Link>
             </div>
           </div>

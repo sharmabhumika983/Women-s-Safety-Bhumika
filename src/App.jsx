@@ -13,7 +13,8 @@ import Addincident from "./Components/user/incident/Addincident";
 import Mincident from "./Components/admin/incident/Mincident";
 import Managecategory from "./Components/admin/category/Managecategory";
 import Addcategory from "./Components/admin/category/Addcategory";
-
+import Login from "./Components/user/layout/pages/Login";
+import Register from "./Components/user/layout/pages/Register";
 
 
 export default function App() {
@@ -30,6 +31,8 @@ export default function App() {
             <Route path='/contact' element={<Contact />} />
             <Route path="/incident" element={<Manageincident />} />
             <Route path="/incident/add" element={<Addincident />} />
+            <Route path="/login" element={<Login />} />
+             <Route path="/register" element={<Register />} />
           </Route>
 
 
