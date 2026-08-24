@@ -1,172 +1,169 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import incidentservices from "../../../services/Incidentservices"
-import Categoryservices from "../../../services/Categoryservices"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import CategoryService from "../../../services/CategoryService";
+import { toast } from "react-hot-toast";
 
 export default function Managecategory() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [incidents, setIncidents] = useState([])
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
-    useEffect(() => {
-        loadIncidents()
-    }, [])
-
-    async function loadIncidents() {
-        const data = await Categoryservices.all()
-        setIncidents(data)
+  async function loadCategories() {
+    setLoading(true);
+    try {
+      const data = await CategoryService.all();
+      setCategories(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load categories");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    async function deleteIncident(id) {
-        await Categoryservices.deleteItem(id)
-        loadIncidents()
+  async function deleteCategory(id, name) {
+    if (window.confirm(`Are you sure you want to delete category "${name}"?`)) {
+      try {
+        await CategoryService.deleteItem(id);
+        toast.success(`Category "${name}" deleted`);
+        loadCategories();
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to delete category");
+      }
     }
+  }
 
-    return (
-        <>
-            {/* Header Start */}
-            <div className="container-fluid page-header py-5">
-                <h1 className="text-center text-white display-6">
-                    Manage Category
-                </h1>
+  async function toggleStatus(category) {
+    const newStatus = category.status === "Active" ? "Inactive" : "Active";
+    try {
+      await CategoryService.update({ status: newStatus }, category.id);
+      toast.success(`Status updated to ${newStatus}`);
+      loadCategories();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update status");
+    }
+  }
 
-                <ol className="breadcrumb justify-content-center mb-0">
-                    <li className="breadcrumb-item">
-                        <Link to="/">Home</Link>
-                    </li>
+  return (
+    <>
+      {/* Header Start */}
+      <div className="container-fluid page-header py-5">
+        <h1 className="text-center text-white display-6">Manage Incident Categories</h1>
+        <ol className="breadcrumb justify-content-center mb-0">
+          <li className="breadcrumb-item">
+            <Link to="/admin">Dashboard</Link>
+          </li>
+          <li className="breadcrumb-item active text-white">Manage Categories</li>
+        </ol>
+      </div>
+      {/* Header End */}
 
-                    <li className="breadcrumb-item active text-white">
-                        Manage Category
-                    </li>
-                </ol>
+      {/* Category Section Start */}
+      <div className="container-fluid py-5">
+        <div className="container py-4">
+          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+              <h3 className="text-primary mb-1">
+                <i className="fas fa-tags me-2"></i>Incident Categories
+              </h3>
+              <p className="text-muted mb-0">
+                Total categories configured: <strong>{categories.length}</strong>
+              </p>
             </div>
-            {/* Header End */}
+            <Link to="/admin/category/add" className="btn btn-primary px-4 py-2 text-white fw-bold shadow-sm">
+              <i className="fas fa-plus-circle me-2"></i> Add New Category
+            </Link>
+          </div>
 
-
-            {/* Incident Section Start */}
-            <div className="container-fluid program py-5">
-
-                <div className="container py-5">
-
-                    {/* Report Incident Button */}
-                    <div className="d-flex justify-content-end mb-5">
-
-                        <Link to="/admin/category/add">
-                            <button className="btn btn-primary px-4 py-2 text-white">
-                                Add Category
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-2 text-muted">Loading categories...</p>
+            </div>
+          ) : categories.length === 0 ? (
+            <div className="card shadow-sm border-0 p-5 text-center bg-light">
+              <i className="fas fa-folder-open fa-3x text-muted mb-3"></i>
+              <h4>No Categories Found</h4>
+              <p className="text-muted">Start by adding your first safety category (e.g. Harassment, Cyber Safety, Stalking).</p>
+              <div className="mt-3">
+                <Link to="/admin/category/add" className="btn btn-primary px-4 py-2 text-white">
+                  <i className="fas fa-plus me-1"></i> Add Category
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="card shadow-sm border-0 overflow-hidden">
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-primary">
+                    <tr>
+                      <th scope="col" style={{ width: "5%" }}>#</th>
+                      <th scope="col" style={{ width: "25%" }}>Category Name</th>
+                      <th scope="col" style={{ width: "40%" }}>Description</th>
+                      <th scope="col" style={{ width: "15%" }}>Status</th>
+                      <th scope="col" style={{ width: "15%" }} className="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categories.map((cat, index) => (
+                      <tr key={cat.id}>
+                        <th scope="row">{index + 1}</th>
+                        <td className="fw-bold text-dark">
+                          <i className="fas fa-tag text-primary me-2"></i>
+                          {cat.name || cat.title || "Unnamed Category"}
+                        </td>
+                        <td className="text-muted">
+                          {cat.description || "No description provided."}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => toggleStatus(cat)}
+                            title="Click to toggle status"
+                            className={`btn btn-sm badge ${
+                              cat.status === "Active"
+                                ? "bg-success text-white"
+                                : "bg-secondary text-white"
+                            }`}
+                            style={{ cursor: "pointer", fontSize: "0.85rem", padding: "6px 12px" }}
+                          >
+                            {cat.status || "Active"}
+                          </button>
+                        </td>
+                        <td className="text-end">
+                          <div className="btn-group">
+                            <Link
+                              to={`/admin/category/edit/${cat.id}`}
+                              className="btn btn-sm btn-outline-primary"
+                              title="Edit Category"
+                            >
+                              <i className="fas fa-edit"></i> Edit
+                            </Link>
+                            <button
+                              onClick={() => deleteCategory(cat.id, cat.name || cat.title)}
+                              className="btn btn-sm btn-outline-danger ms-1"
+                              title="Delete Category"
+                            >
+                              <i className="fas fa-trash-alt"></i> Delete
                             </button>
-                        </Link>
-
-                    </div>
-
-
-                    {/* Heading */}
-                    <div
-                        className="mx-auto text-center"
-                        style={{ maxWidth: 700 }}
-                    >
-
-                        <h4 className="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2">
-                           
-                        </h4>
-
-                        <h1 className="mb-5 display-5">
-                            
-                        </h1>
-
-                    </div>
-
-
-                    {/* Incidents */}
-                    <div className="row g-5 justify-content-center">
-
-                        {incidents.length === 0 ? (
-
-                            <div className="text-center">
-                                <h4></h4>
-                            </div>
-
-                        ) : (
-
-                            incidents.map((incident) => (
-
-                                <div
-                                    className="col-md-6 col-lg-6 col-xl-4"
-                                    key={incident.id}
-                                >
-
-                                    <div className="program-item rounded">
-
-                                        {/* Image */}
-                                        <div className="program-img position-relative">
-
-                                            <div className="overflow-hidden img-border-radius">
-
-                                                <img
-                                                    src={
-                                                        incident.imageUrl
-                                                            ? incident.imageUrl
-                                                            : "img/incident 1.jpg"
-                                                    }
-                                                    className="img-fluid w-100"
-                                                    alt={incident.name}
-                                                />
-
-                                            </div>
-
-                                            {/* Status */}
-                                            <div className="px-4 py-2 bg-primary text-white program-rate">
-                                                {incident.status}
-                                            </div>
-
-                                        </div>
-
-
-                                        {/* Incident Details */}
-                                        <div className="program-text bg-white px-4 pb-3">
-
-                                            <div className="program-text-inner">
-
-                                                <h4 className="mb-3">
-                                                    {incident.name}
-                                                </h4>
-
-                                                <p className="mt-3 mb-3">
-                                                    {incident.description}
-                                                </p>
-                                            </div>
-
-                                        </div>
-
-
-                                        {/* Buttons */}
-                                        <div className="d-flex justify-content-end px-4 py-3 bg-primary rounded-bottom">
-
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={() =>
-                                                    deleteIncident(incident.id)
-                                                }
-                                            >
-                                                Delete
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            ))
-
-                        )}
-
-                    </div>
-
-                </div>
-
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            {/* Incident Section End */}
-
-        </>
-    )
+          )}
+        </div>
+      </div>
+      {/* Category Section End */}
+    </>
+  );
 }
