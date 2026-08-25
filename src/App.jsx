@@ -17,6 +17,8 @@ import Dashboard from "./Components/admin/pages/Dashboard";
 import Mincident from "./Components/admin/incident/Mincident";
 import Managecategory from "./Components/admin/category/Managecategory";
 import Addcategory from "./Components/admin/category/Addcategory";
+import Trustedcontacts from "./Components/user/layout/pages/Trustedcontacts";
+import Addcontacts from "./Components/user/layout/pages/Addcontacts";
 
 export default function App() {
   return (
@@ -36,6 +38,9 @@ export default function App() {
             <Route path="incident/add" element={<Addincident />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="trustedcontacts" element={<Trustedcontacts/>} />
+            <Route path="Addcontacts" element={<Addcontacts/>} />
+          
           </Route>
 
           {/* ADMIN ROUTES */}
