@@ -118,6 +118,9 @@ export default function Header() {
                 <Link to="/contact" className={`nav-item nav-link ${isActive("/contact")}`}>
                   Contact
                 </Link>
+                <Link to="/trustedcontacts" className={`nav-item nav-link ${isActive("/trustedcontacts")}`}>
+                  Trustedcontacts
+                </Link>
 
                 {isAdmin && (
                   <Link to="/admin" className="nav-item nav-link text-danger fw-bold">
