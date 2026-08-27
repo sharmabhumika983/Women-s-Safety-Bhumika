@@ -118,9 +118,12 @@ export default function Header() {
                 <Link to="/contact" className={`nav-item nav-link ${isActive("/contact")}`}>
                   Contact
                 </Link>
-                <Link to="/trustedcontacts" className={`nav-item nav-link ${isActive("/trustedcontacts")}`}>
-                  Trustedcontacts
-                </Link>
+                
+                {(!user || user.userType == "2") && (
+                  <Link to="/tips" className={`nav-item nav-link ${isActive("/tips")}`}>
+                    Safety Tips
+                  </Link>
+                )}
 
                 {isAdmin && (
                   <Link to="/admin" className="nav-item nav-link text-danger fw-bold">
@@ -130,17 +133,38 @@ export default function Header() {
               </div>
 
               <div className="d-flex align-items-center">
+                {user && user.userType == "2" && (
+                  <button 
+                    className="btn btn-danger btn-sm px-3 py-2 rounded-pill fw-bold me-3 shadow heartbeat-btn"
+                    onClick={() => toast.error("SOS ALERT SENT TO EMERGENCY CONTACTS!", { duration: 4000, icon: '🚨' })}
+                  >
+                    <i className="fas fa-exclamation-triangle me-1"></i> SOS
+                  </button>
+                )}
+
+                {(!user || user.userType == "2") && (
+                  <Link to="/emergency" className="btn btn-outline-danger btn-sm px-3 py-2 rounded-pill fw-bold me-3 d-none d-lg-block">
+                    <i className="fas fa-phone-alt me-1"></i> 1091
+                  </Link>
+                )}
+
                 {user ? (
-                  <div className="d-flex align-items-center">
-                    <span className="badge bg-primary text-white p-2 me-2 d-none d-md-inline-block">
+                  <div className="nav-item dropdown">
+                    <a href="#" className="nav-link dropdown-toggle btn btn-primary text-white rounded-pill px-3 py-2" data-bs-toggle="dropdown">
                       <i className="fas fa-user me-1"></i> {user.name || "User"}
-                    </span>
-                    <button
-                      onClick={handleLogout}
-                      className="btn btn-outline-danger btn-sm px-3 py-2 rounded-pill fw-bold"
-                    >
-                      <i className="fas fa-sign-out-alt me-1"></i> Logout
-                    </button>
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-end m-0 shadow">
+                      {user.userType == "2" ? (
+                        <>
+                          <Link to="/profile" className="dropdown-item"><i className="fas fa-user-edit me-2"></i>My Profile</Link>
+                          <Link to="/my-reports" className="dropdown-item"><i className="fas fa-file-alt me-2"></i>My Reports</Link>
+                        </>
+                      ) : (
+                        <Link to="/admin" className="dropdown-item"><i className="fas fa-tachometer-alt me-2"></i>Dashboard</Link>
+                      )}
+                      <hr className="dropdown-divider" />
+                      <button onClick={handleLogout} className="dropdown-item text-danger"><i className="fas fa-sign-out-alt me-2"></i>Logout</button>
+                    </div>
                   </div>
                 ) : (
                   <div className="d-flex align-items-center gap-2">

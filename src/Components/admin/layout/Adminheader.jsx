@@ -83,8 +83,15 @@ export default function Adminheader() {
                 <Link to="/admin/category" className={`nav-item nav-link ${isActive("/admin/category")}`}>
                   <i className="fas fa-tags me-1"></i> Manage Categories
                 </Link>
-                <Link to="/admin/category/add" className={`nav-item nav-link ${isActive("/admin/category/add")}`}>
-                  <i className="fas fa-plus-circle me-1"></i> Add Category
+            
+                <Link to="/admin/users" className={`nav-item nav-link ${isActive("/admin/users")}`}>
+                  <i className="fas fa-users me-1"></i> Manage Users
+                </Link>
+                <Link to="/admin/tips" className={`nav-item nav-link ${isActive("/admin/tips")}`}>
+                  <i className="fas fa-lightbulb me-1"></i> Safety Tips
+                </Link>
+                <Link to="/emergency" className={`nav-item nav-link ${isActive("/emergency")}`}>
+                  <i className="fas fa-phone-alt me-1"></i> Emergency
                 </Link>
               </div>
             </div>

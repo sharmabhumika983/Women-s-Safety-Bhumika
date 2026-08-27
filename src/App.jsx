@@ -19,6 +19,13 @@ import Managecategory from "./Components/admin/category/Managecategory";
 import Addcategory from "./Components/admin/category/Addcategory";
 import Trustedcontacts from "./Components/user/layout/pages/Trustedcontacts";
 import Addcontacts from "./Components/user/layout/pages/Addcontacts";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import ManageUsers from "./Components/admin/users/ManageUsers";
+import ManageSafetyTips from "./Components/admin/safety/ManageSafetyTips";
+import ManageProfile from "./Components/user/profile/ManageProfile";
+import SafetyTips from "./Components/user/safety/SafetyTips";
+import EmergencyNumbers from "./Components/user/safety/EmergencyNumbers";
+import MyReports from "./Components/user/incident/MyReports";
 
 export default function App() {
   return (
@@ -26,7 +33,7 @@ export default function App() {
       <Toaster position="top-right" reverseOrder={false} />
       <BrowserRouter>
         <Routes>
-          {/* USER ROUTES */}
+          {/* PUBLIC ROUTES */}
           <Route path="/" element={<Layout />}>
             <Route path="" element={<Home />} />
             <Route path="about" element={<About />} />
@@ -34,22 +41,33 @@ export default function App() {
             <Route path="program" element={<Program />} />
             <Route path="event" element={<Events />} />
             <Route path="contact" element={<Contact />} />
-            <Route path="incident" element={<Manageincident />} />
-            <Route path="incident/add" element={<Addincident />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="trustedcontacts" element={<Trustedcontacts/>} />
-            <Route path="Addcontacts" element={<Addcontacts/>} />
-          
+            <Route path="tips" element={<SafetyTips/>} />
+            <Route path="emergency" element={<EmergencyNumbers/>} />
+            
+            {/* USER PROTECTED ROUTES */}
+            <Route element={<ProtectedRoute allowedRoles={["2"]} />}>
+              <Route path="incident" element={<Manageincident />} />
+              <Route path="incident/add" element={<Addincident />} />
+              <Route path="trustedcontacts" element={<Trustedcontacts/>} />
+              <Route path="Addcontacts" element={<Addcontacts/>} />
+              <Route path="profile" element={<ManageProfile/>} />
+              <Route path="my-reports" element={<MyReports/>} />
+            </Route>
           </Route>
 
-          {/* ADMIN ROUTES */}
-          <Route path="/admin" element={<Adminlayout />}>
-            <Route path="" element={<Dashboard />} />
-            <Route path="incident" element={<Mincident />} />
-            <Route path="category" element={<Managecategory />} />
-            <Route path="category/add" element={<Addcategory />} />
-            <Route path="category/edit/:id" element={<Addcategory />} />
+          {/* ADMIN PROTECTED ROUTES */}
+          <Route path="/admin" element={<ProtectedRoute allowedRoles={["1"]} />}>
+            <Route element={<Adminlayout />}>
+              <Route path="" element={<Dashboard />} />
+              <Route path="incident" element={<Mincident />} />
+              <Route path="category" element={<Managecategory />} />
+              <Route path="category/add" element={<Addcategory />} />
+              <Route path="category/edit/:id" element={<Addcategory />} />
+              <Route path="users" element={<ManageUsers />} />
+              <Route path="tips" element={<ManageSafetyTips />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
