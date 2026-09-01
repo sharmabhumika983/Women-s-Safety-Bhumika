@@ -103,12 +103,16 @@ export default function Header() {
                 <Link to="/" className={`nav-item nav-link ${isActive("/")}`}>
                   Home
                 </Link>
-                <Link to="/incident" className={`nav-item nav-link ${isActive("/incident")}`}>
-                  Incidents
-                </Link>
-                <Link to="/incident/add" className={`nav-item nav-link ${isActive("/incident/add")}`}>
-                  Report Incident
-                </Link>
+                {user && user.userType == "2" && (
+                  <>
+                    <Link to="/incident" className={`nav-item nav-link ${isActive("/incident")}`}>
+                      Incidents
+                    </Link>
+                    <Link to="/incident/add" className={`nav-item nav-link ${isActive("/incident/add")}`}>
+                      Report Incident
+                    </Link>
+                  </>
+                )}
                 <Link to="/about" className={`nav-item nav-link ${isActive("/about")}`}>
                   About
                 </Link>
